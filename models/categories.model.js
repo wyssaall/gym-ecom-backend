@@ -10,7 +10,7 @@ image:{
     type:String,
     required:true
 },
-  timestamps: true
+ // timestamps: true
 
 })
 
