@@ -2,6 +2,7 @@ import dotenv from 'dotenv'
 import express from 'express'
 import connectDB from './config/db.js';
 import productsRouter from './routes/products.routes.js';
+import productsAdminRouter from './routes/adminProducts.routes.js';
 
 
 dotenv.config()
@@ -12,6 +13,7 @@ connectDB();
 
 app.use(express.json());
 app.use('/api/products', productsRouter)
+app.use('/api/admin/products', productsAdminRouter)
 
 
 
