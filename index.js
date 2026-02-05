@@ -7,6 +7,9 @@ import cors from 'cors';
 import { errorHandler } from './middlewares/error.middleware.js';
 import categoryRouter from './routes/categories.routes.js';
 import categoryAdminRouter from './routes/adminCategories.routes.js';
+import AppError from './utils/appError.js';
+import ordersAdminRouter from './routes/adminOrders.routes.js';
+import ordersRouter from './routes/orders.routes.js';
 
 
 dotenv.config()
@@ -24,13 +27,15 @@ app.use('/api/admin/products', productsAdminRouter);
 app.use('/api/categories', categoryRouter);
 app.use('/api/admin/categories', categoryAdminRouter);
 
-import AppError from './utils/appError.js';
+app.use('/api/orders', ordersRouter);
+app.use('/api/admin/orders', ordersAdminRouter);
+
 
 app.use((req, res, next) => {
     next(new AppError(`Not Found - ${req.originalUrl}`, 404));
 });
 
-app.use(errorHandler);
+app.use(errorHandler); //global error handler middleware
 
 app.listen(port, 'localhost', () => {
     console.log(`the server is running at port ${port}`);
