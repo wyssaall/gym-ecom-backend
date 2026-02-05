@@ -3,7 +3,7 @@ import expressAsyncHandler from "express-async-handler";
 
 //get all categories
 const getAllCategories = expressAsyncHandler(async (req,res)=>{
-let categories = await Category.findAll();
+let categories = await Category.find();
 res.json(categories);
 }
 );

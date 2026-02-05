@@ -52,4 +52,10 @@ const deleteProduct = expressAsyncHandler(async (req, res) => {
 
 });
 
-export { getAllProducts, getOneProduct, getNewCollection, createProduct, updateProduct, deleteProduct };
+//products by category
+const getProductsByCategory = async(req,res)=>{
+  let productsByCat = await Product.find({category:req.params.name});
+  res.json({message:"Products by category", productsByCat});
+}
+
+export { getAllProducts, getOneProduct, getNewCollection, createProduct, updateProduct, deleteProduct, getProductsByCategory };

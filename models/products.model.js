@@ -27,6 +27,7 @@ const productSchema = new mongoose.Schema({
   },
   category:{
     type:String,
+    required:true
   },
  isNew:{
     type:Boolean,

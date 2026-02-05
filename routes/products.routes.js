@@ -1,12 +1,13 @@
 
 import express from 'express'
-import { getAllProducts, getNewCollection, getOneProduct } from '../controllers/products.controller.js';
+import { getAllProducts, getNewCollection, getOneProduct, getProductsByCategory } from '../controllers/products.controller.js';
 
 
 const productsRouter = express.Router();
 
 //get all products
 productsRouter.get('/', getAllProducts);
+productsRouter.get('/category/:name', getProductsByCategory);
 //get new collection product
 productsRouter.get('/newCollection', getNewCollection);
 
