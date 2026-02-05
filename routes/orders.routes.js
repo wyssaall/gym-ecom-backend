@@ -3,7 +3,7 @@ import { createOrder, getClientOrders } from '../controllers/orders.controller.j
 
 const ordersRouter = express.Router()
 
-ordersRouter.get('/', getClientOrders);
+ordersRouter.get('/', getClientOrders); ///api/orders?customerPhone=12345678
 ordersRouter.post('/', createOrder);
 
 export  default ordersRouter;

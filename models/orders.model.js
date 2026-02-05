@@ -12,7 +12,8 @@ const orderSchema = new mongoose.Schema({
     },
  
    wilaya: {
-    type: mongoose.Schema.Types.ObjectId,
+      type: String,
+   // type: mongoose.Schema.Types.ObjectId,
     ref: "Wilaya",
     required: true,
    },

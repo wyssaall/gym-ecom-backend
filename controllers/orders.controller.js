@@ -8,7 +8,28 @@ import AppError from "../utils/appError.js";
 //user all orders
 const getClientOrders = expressAsyncHandler(async (req, res) => {
   const orders = await Order.find({ "customer.phone": req.query.customerPhone });
-  res.json(orders);
+   if (orders.length === 0) {
+      return res.status(404).json({
+        message: "No orders found for this customer"
+      });
+    }
+
+      const customer = orders[0].customer;
+
+    let allItems = [];
+    let globalTotal = 0;
+
+    // Merge items + calculate total
+    orders.forEach(order => {
+      allItems = allItems.concat(order.items);
+      globalTotal += order.total;
+    });
+   res.json({
+      customer,
+      items: allItems,
+      total: globalTotal,
+      ordersCount: orders.length
+    });
 });
 
 
@@ -46,7 +67,7 @@ const deleteOrder = expressAsyncHandler(async(req,res)=>{
     if(!deleteOrder){
         throw new AppError("Order not found", 404);
     }
-    res.json({message:"Order deleted successfully",deleteOrder});
+    res.json({message:"Order deleted successfully"});
 });
 
 export {getAllOrders, createOrder, updatedOrder, deleteOrder,getClientOrders };
