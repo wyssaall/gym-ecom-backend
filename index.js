@@ -24,10 +24,10 @@ app.use('/api/admin/products', productsAdminRouter);
 app.use('/api/categories', categoryRouter);
 app.use('/api/admin/categories', categoryAdminRouter);
 
+import AppError from './utils/appError.js';
+
 app.use((req, res, next) => {
-    const error = new Error(`Not Found - ${req.originalUrl}`);
-    res.status(404);
-    next(error);
+    next(new AppError(`Not Found - ${req.originalUrl}`, 404));
 });
 
 app.use(errorHandler);
