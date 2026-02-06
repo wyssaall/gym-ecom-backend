@@ -16,7 +16,7 @@ const getAllProducts = expressAsyncHandler(async (req, res) => {
   const skip = (page - 1) * limit;  
 
 
-  let products = await Product.find().limit(limit).skip(page);
+  let products = await Product.find().limit(limit).skip(skip);
   res.json(products);
 });
 

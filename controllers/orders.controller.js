@@ -7,7 +7,12 @@ import AppError from "../utils/appError.js";
 
 //user all orders
 const getClientOrders = expressAsyncHandler(async (req, res) => {
-  const orders = await Order.find({ "customer.phone": req.query.customerPhone });
+    const query = req.query;
+    const limit = query.limit || 2;
+    const page = query.page || 1;
+    const skip = (page - 1) * limit;
+
+  const orders = await Order.find({ "customer.phone": req.query.customerPhone }).limit(limit).skip(skip);
    if (orders.length === 0) {
       return res.status(404).json({
         message: "No orders found for this customer"
@@ -48,7 +53,11 @@ const createOrder = expressAsyncHandler(async(req,res)=>{
 //get all orders
 
 const getAllOrders = expressAsyncHandler(async(req,res)=>{
-    let orders = await Order.find();
+        const query = req.query;
+    const limit = query.limit || 2;
+    const page = query.page || 1;
+    const skip = (page - 1) * limit;
+    let orders = await Order.find().limit(limit).skip(skip);
     res.json(orders);
 });
 
