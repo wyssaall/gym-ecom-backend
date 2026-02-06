@@ -6,7 +6,7 @@ import { getAllProducts, getNewCollection, getOneProduct, getProductsByCategory 
 const productsRouter = express.Router();
 
 //get all products
-productsRouter.get('/', getAllProducts);
+productsRouter.get('/', getAllProducts);  //?limit=2&page=4
 productsRouter.get('/category/:name', getProductsByCategory);
 //get new collection product
 productsRouter.get('/newCollection', getNewCollection);

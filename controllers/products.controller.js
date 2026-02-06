@@ -7,7 +7,16 @@ import AppError from "../utils/appError.js";
 //get all products
 
 const getAllProducts = expressAsyncHandler(async (req, res) => {
-  let products = await Product.find();
+ const query = req.query;
+ console.log("query:", query);
+ 
+
+  const limit = query.limit || 8;
+  const page = query.page || 1;
+  const skip = (page - 1) * limit;  
+
+
+  let products = await Product.find().limit(limit).skip(page);
   res.json(products);
 });
 
