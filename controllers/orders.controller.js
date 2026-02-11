@@ -8,8 +8,8 @@ import AppError from "../utils/appError.js";
 //user all orders
 const getClientOrders = expressAsyncHandler(async (req, res) => {
     const query = req.query;
-    const limit = query.limit || 2;
-    const page = query.page || 1;
+    const limit = Number(query.limit) || 2;
+    const page = Number(query.page) || 1;
     const skip = (page - 1) * limit;
 
   const orders = await Order.find({ "customer.phone": req.query.customerPhone }).limit(limit).skip(skip);
@@ -54,8 +54,8 @@ const createOrder = expressAsyncHandler(async(req,res)=>{
 
 const getAllOrders = expressAsyncHandler(async(req,res)=>{
         const query = req.query;
-    const limit = query.limit || 2;
-    const page = query.page || 1;
+    const limit = Number(query.limit) || 2;
+    const page = Number(query.page )|| 1;
     const skip = (page - 1) * limit;
     let orders = await Order.find().limit(limit).skip(skip);
     res.json(orders);

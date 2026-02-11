@@ -10,8 +10,10 @@ image:{
     type:String,
     required:true
 },
- // timestamps: true
-
+nbrProduit:{
+    type:Number,
+    default:0
+}
 })
 
 const Category = mongoose.model('Category',categorySchema);
