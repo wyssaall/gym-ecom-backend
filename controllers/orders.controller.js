@@ -1,6 +1,7 @@
 import Order from '../models/orders.model.js';
 import expressAsyncHandler from "express-async-handler";
 import AppError from "../utils/appError.js";
+import Product from '../models/products.model.js';
 
 
 
@@ -40,13 +41,36 @@ const getClientOrders = expressAsyncHandler(async (req, res) => {
 
 //create order
 
-const createOrder = expressAsyncHandler(async(req,res)=>{
+const createOrder = expressAsyncHandler(async (req, res) => {
+    const { items } = req.body;
 
+    // 1. Validate Stock for ALL items first
+    for (const item of items) {
+        const product = await Product.findById(item.product);
+        if (!product) {
+            res.status(404);
+            throw new Error(`Product not found: ${item.name}`);
+        }
+        if (product.stock < item.quantity) {
+            res.status(400);
+            throw new Error(`Insufficient stock for product: ${product.name}. Available: ${product.stock}, Requested: ${item.quantity}`);
+        }
+    }
+
+    // 2. Decrement Stock
+    for (const item of items) {
+        const product = await Product.findById(item.product);
+        if (product) {
+            product.stock -= item.quantity;
+            await product.save();
+        }
+    }
+
+    // 3. Create Order
     let newOrder = new Order(req.body);
     await newOrder.save();
-    res.status(200).json({messag: "Order created successfully", newOrder});
-}
-)
+    res.status(201).json({ message: "Order created successfully", newOrder });
+});
 
 
 //admin 

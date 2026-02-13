@@ -41,9 +41,13 @@ discount:{
     type:Number,
     default:0
   },
- // timestamps: true
-
-
+  status:{
+    type:String,
+    enum:['Disponible', 'Épuisé']
+  }
+},
+{
+    timestamps: true,
 })
 const Product = mongoose.model('Product',productSchema);
 export default Product;
