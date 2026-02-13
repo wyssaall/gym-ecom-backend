@@ -76,13 +76,29 @@ const getNewCollection = expressAsyncHandler(async (req, res) => {
 });
 
 const createProduct = expressAsyncHandler(async (req, res) => {
-  let newProduct = new Product(req.body);
+  const imagePaths = req.files ? req.files.map(file => file.path.replace(/\\/g, "/")) : [];
+
+  if (!imagePaths || imagePaths.length === 0) {
+    res.status(400);
+    throw new Error("At least one image is required");
+  }
+
+  let newProduct = new Product({
+    ...req.body,
+    images: imagePaths
+  });
   await newProduct.save();
   res.json(newProduct);
 });
 
 const updateProduct = expressAsyncHandler(async (req, res) => {
-  let updatedProduct = await Product.findByIdAndUpdate(req.params.id, { $set: { ...req.body } }, { new: true });
+  let updateData = { ...req.body };
+
+  if (req.files && req.files.length > 0) {
+    updateData.images = req.files.map(file => file.path.replace(/\\/g, "/"));
+  }
+
+  let updatedProduct = await Product.findByIdAndUpdate(req.params.id, { $set: updateData }, { new: true });
   if (!updatedProduct) {
     throw new AppError("Product not found", 404);
   }

@@ -1,6 +1,7 @@
 import express from 'express'
 import { createCategory, deletedCategory, getAllCategories, getOneCategory, updatedCategory } from '../controllers/categories.controller.js';
 import verifyToken from '../middlewares/verifyToken.js';
+import upload from '../utils/uploadFile.js';
 
 const categoryAdminRouter = express.Router();
 categoryAdminRouter.use(verifyToken);
@@ -12,10 +13,10 @@ categoryAdminRouter.get('/', getAllCategories);
 categoryAdminRouter.get('/:id', getOneCategory);
 
 //create
-categoryAdminRouter.post('/', createCategory);
+categoryAdminRouter.post('/', upload.single('image'), createCategory);
 
 //update
-categoryAdminRouter.put('/:id', updatedCategory);
+categoryAdminRouter.put('/:id', upload.single('image'), updatedCategory);
 
 //delete
 categoryAdminRouter.delete('/:id', deletedCategory);

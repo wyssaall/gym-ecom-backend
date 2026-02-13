@@ -34,7 +34,16 @@ const createCategory = expressAsyncHandler(async (req, res) => {
         throw new Error("Category already exists");
     }
 
-    let newCategory = new Category(req.body);
+    const imagePath = req.file ? req.file.path.replace(/\\/g, "/") : null;
+    if (!imagePath) {
+        res.status(400);
+        throw new Error("Image is required");
+    }
+
+    let newCategory = new Category({
+        ...req.body,
+        image: imagePath
+    });
     await newCategory.save();
     res.status(200).json({ message: "Category created successfully", newCategory });
 
@@ -53,7 +62,12 @@ const updatedCategory = expressAsyncHandler(async (req, res) => {
         }
     }
 
-    let updatedCategory = await Category.findByIdAndUpdate(req.params.id, { $set: { ...req.body } }, { new: true });
+    let updateData = { ...req.body };
+    if (req.file) {
+        updateData.image = req.file.path.replace(/\\/g, "/");
+    }
+
+    let updatedCategory = await Category.findByIdAndUpdate(req.params.id, { $set: updateData }, { new: true });
     if (!updatedCategory) {
         res.status(404);
         throw new Error("Category not found");

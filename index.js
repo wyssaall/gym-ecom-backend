@@ -11,6 +11,11 @@ import AppError from './utils/appError.js';
 import ordersAdminRouter from './routes/adminOrders.routes.js';
 import ordersRouter from './routes/orders.routes.js';
 import adminRouter from './routes/admin.routes.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
 dotenv.config()
@@ -22,6 +27,7 @@ app.use(cors());
 
 
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/products', productsRouter);
 app.use('/api/admin/products', productsAdminRouter);
 
