@@ -10,6 +10,7 @@ import categoryAdminRouter from './routes/adminCategories.routes.js';
 import AppError from './utils/appError.js';
 import ordersAdminRouter from './routes/adminOrders.routes.js';
 import ordersRouter from './routes/orders.routes.js';
+import adminRouter from './routes/admin.routes.js';
 
 
 dotenv.config()
@@ -30,7 +31,7 @@ app.use('/api/admin/categories', categoryAdminRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/admin/orders', ordersAdminRouter);
 
-
+app.use('/api/admin', adminRouter);
 app.use((req, res, next) => {
     next(new AppError(`Not Found - ${req.originalUrl}`, 404));
 });
