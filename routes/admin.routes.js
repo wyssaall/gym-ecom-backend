@@ -1,10 +1,11 @@
 import express from 'express'
-import {getAdmin, register, deletedAdmin} from '../controllers/admin.controller.js'
+import {login, register, deletedAdmin} from '../controllers/admin.controller.js'
 
 const adminRouter = express.Router()
 
-adminRouter.get('/login', getAdmin);
 adminRouter.post('/register', register);
+adminRouter.post('/login', login);
+
 //adminRouter.delete('/:id', deletedAdmin);
 
 export default adminRouter;

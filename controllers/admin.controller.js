@@ -5,16 +5,28 @@ import bcrypt from 'bcryptjs';
 
 
 
-//get  admin
-const getAdmin = expressAsyncHandler(async (req,res)=>{
-let admin = await Admin.findById(req.params.id);
-if(!admin){
-    res.status(404);
-    throw new Error("Admin not found");
-}
-res.json(admin);
-}
-);
+//login
+const login = expressAsyncHandler(async(req,res)=>{
+    const {email, password} = req.body;
+    if (!email || !password){
+        res.status(400);
+        throw new Error("All fields are required");
+    }
+
+    const admin = await Admin.findOne({email});
+    const passMatch = await bcrypt.compare(password, admin.password);
+
+    if(admin && passMatch){
+        res.status(200);
+        return res.json({message:"Login successful", admin:{name: admin.name, email: admin.email}})
+
+    } else {
+        res.status(401);
+        throw new Error("Invalid email or password");
+    }
+
+});
+
 
 //register admin
 
@@ -53,4 +65,4 @@ res.status(200).json({message:"Admin deleted successfully",deletedAdmin});
 });
 
 
-export {getAdmin, register, deletedAdmin};
+export {login, register, deletedAdmin};
