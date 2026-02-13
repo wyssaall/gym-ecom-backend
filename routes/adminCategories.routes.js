@@ -1,7 +1,9 @@
 import express from 'express'
 import { createCategory, deletedCategory, getAllCategories, getOneCategory, updatedCategory } from '../controllers/categories.controller.js';
+import verifyToken from '../middlewares/verifyToken.js';
 
 const categoryAdminRouter = express.Router();
+categoryAdminRouter.use(verifyToken);
 
 //get all
 categoryAdminRouter.get('/', getAllCategories);
