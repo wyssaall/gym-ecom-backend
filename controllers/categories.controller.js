@@ -1,5 +1,6 @@
 import Category from "../models/categories.model.js";
 import expressAsyncHandler from "express-async-handler";
+import mongoose from "mongoose";
 
 //get all categories
 const getAllCategories = expressAsyncHandler(async (req, res) => {
@@ -62,17 +63,29 @@ const updatedCategory = expressAsyncHandler(async (req, res) => {
         }
     }
 
+    let categoryToUpdate = await Category.findById(req.params.id);
+    if (!categoryToUpdate) {
+        res.status(404);
+        throw new Error("Category not found");
+    }
+
+    const oldName = categoryToUpdate.name;
+
     let updateData = { ...req.body };
     if (req.file) {
         updateData.image = req.file.path.replace(/\\/g, "/");
     }
 
     let updatedCategory = await Category.findByIdAndUpdate(req.params.id, { $set: updateData }, { new: true });
-    if (!updatedCategory) {
-        res.status(404);
-        throw new Error("Category not found");
 
+    // If name changed, update all products category field
+    if (name && name !== oldName) {
+        await mongoose.model('Product').updateMany(
+            { category: oldName },
+            { $set: { category: name } }
+        );
     }
+
     res.status(200).json({ message: "Category updated successfully", updatedCategory })
 });
 

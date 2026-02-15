@@ -46,7 +46,7 @@ const getAllProducts = expressAsyncHandler(async (req, res) => {
   query = query.skip(skip).limit(limit);
 
   // Execute query
-  const products = await query;
+  const products = await query.populate('category');
 
   // Get total count for pagination info
   const total = await Product.countDocuments(queryConditions);
@@ -61,7 +61,7 @@ const getAllProducts = expressAsyncHandler(async (req, res) => {
 
 
 const getOneProduct = expressAsyncHandler(async (req, res) => {
-  let product = await Product.findById(req.params.id);
+  let product = await Product.findById(req.params.id).populate('category');
   // Optional: Check if product exists and throw error if not
   if (!product) {
     throw new AppError("Product not found", 404);
@@ -70,7 +70,7 @@ const getOneProduct = expressAsyncHandler(async (req, res) => {
 });
 
 const getNewCollection = expressAsyncHandler(async (req, res) => {
-  let newProducts = await Product.find({ isNew: true });
+  let newProducts = await Product.find({ isNew: true }).populate('category');
   res.json(newProducts);
 
 });
@@ -98,26 +98,48 @@ const updateProduct = expressAsyncHandler(async (req, res) => {
     updateData.images = req.files.map(file => file.path.replace(/\\/g, "/"));
   }
 
-  let updatedProduct = await Product.findByIdAndUpdate(req.params.id, { $set: updateData }, { new: true });
-  if (!updatedProduct) {
+  let updated = await Product.findByIdAndUpdate(req.params.id, { $set: updateData }, { new: true });
+  if (!updated) {
     throw new AppError("Product not found", 404);
   }
-  res.json(updatedProduct);
+  res.json(updated);
 });
 
 const deleteProduct = expressAsyncHandler(async (req, res) => {
-  let deleteProduct = await Product.findByIdAndDelete(req.params.id);
-  if (!deleteProduct) {
+  let deleted = await Product.findByIdAndDelete(req.params.id);
+  if (!deleted) {
     throw new AppError("Product not found", 404);
   }
-  res.status(200).json({ message: "Product deleted successfully", deleteProduct });
+  res.status(200).json({ message: "Product deleted successfully", deleted });
 
 });
 
 //products by category
 const getProductsByCategory = expressAsyncHandler(async (req, res) => {
-  let productsByCat = await Product.find({ category: req.params.name });
+  let productsByCat = await Product.find({ category: req.params.name }).populate('category');
   res.json({ message: "Products by category", productsByCat });
 });
 
-export { getAllProducts, getOneProduct, getNewCollection, createProduct, updateProduct, deleteProduct, getProductsByCategory };
+// bulk update products category
+const updateProductsCategory = expressAsyncHandler(async (req, res) => {
+  const { productIds, categoryId } = req.body;
+
+  if (!productIds || !Array.isArray(productIds)) {
+    res.status(400);
+    throw new Error("Product IDs are required and must be an array");
+  }
+
+  if (!categoryId) {
+    res.status(400);
+    throw new Error("Category ID is required");
+  }
+
+  await Product.updateMany(
+    { _id: { $in: productIds } },
+    { $set: { category: categoryId } }
+  );
+
+  res.status(200).json({ message: "Products category updated successfully" });
+});
+
+export { getAllProducts, getOneProduct, getNewCollection, createProduct, updateProduct, deleteProduct, getProductsByCategory, updateProductsCategory };
