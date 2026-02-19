@@ -63,6 +63,11 @@ app.use('/api/wilayas', wilayasRouter);
 app.use('/api/admin/wilayas', adminWilayasRouter);
 
 app.use('/api/admin', adminRouter);
+
+app.get('/', (req, res) => {
+    res.send('API is running....');
+});
+
 app.use((req, res, next) => {
     next(new AppError(`Not Found - ${req.originalUrl}`, 404));
 });
