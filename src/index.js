@@ -28,6 +28,7 @@ const port = process.env.PORT || 5000;;
 connectDB();
 const allowedOrigins = [
     'https://gym-ecom-frontend.onrender.com',
+    'https://gym-ecom-frontend-user.onrender.com',
     'http://localhost:5173',
     'http://localhost:5174',
     'http://localhost:3000'
