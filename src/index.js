@@ -1,5 +1,6 @@
 import dotenv from 'dotenv'
 import express from 'express'
+import compression from 'compression';
 import connectDB from './config/db.js';
 import productsRouter from './routes/products.routes.js';
 import productsAdminRouter from './routes/adminProducts.routes.js';
@@ -29,6 +30,7 @@ connectDB();
 const allowedOrigins = [
     'https://gym-ecom-frontend.onrender.com',
     'https://gym-ecom-frontend-user.onrender.com',
+    'https://gym-admin-dsd3.onrender.com',
     'http://localhost:5173',
     'http://localhost:5174',
     'http://localhost:3000'
@@ -48,6 +50,7 @@ app.use(cors({
 }));
 
 
+app.use(compression());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 app.use('/api/products', productsRouter);
