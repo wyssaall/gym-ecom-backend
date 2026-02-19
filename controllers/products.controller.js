@@ -116,7 +116,28 @@ const deleteProduct = expressAsyncHandler(async (req, res) => {
 
 //products by category
 const getProductsByCategory = expressAsyncHandler(async (req, res) => {
-  let productsByCat = await Product.find({ category: req.params.name }).populate('category');
+  const categoryParam = req.params.name;
+  let query = { category: categoryParam };
+
+  // If the parameter is not a valid ObjectId, assume it's a category name
+  // and try to find the category object first to get its ID
+  if (!mongoose.Types.ObjectId.isValid(categoryParam)) {
+    const categoryObject = await mongoose.model('Category').findOne({ name: categoryParam });
+    if (categoryObject) {
+      // Search for either the ID or the name string (backward compatibility)
+      query = {
+        $or: [
+          { category: categoryObject._id },
+          { category: categoryParam }
+        ]
+      };
+    } else {
+      // If no category found by name, still search by name string in case some products use it
+      query = { category: categoryParam };
+    }
+  }
+
+  const productsByCat = await Product.find(query).populate('category');
   res.json({ message: "Products by category", productsByCat });
 });
 

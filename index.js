@@ -11,6 +11,9 @@ import AppError from './utils/appError.js';
 import ordersAdminRouter from './routes/adminOrders.routes.js';
 import ordersRouter from './routes/orders.routes.js';
 import adminRouter from './routes/admin.routes.js';
+import dashboardRouter from './routes/dashboard.routes.js';
+import wilayasRouter from './routes/wilayas.routes.js';
+import adminWilayasRouter from './routes/adminWilayas.routes.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -36,6 +39,10 @@ app.use('/api/admin/categories', categoryAdminRouter);
 
 app.use('/api/orders', ordersRouter);
 app.use('/api/admin/orders', ordersAdminRouter);
+app.use('/api/admin/dashboard', dashboardRouter);
+
+app.use('/api/wilayas', wilayasRouter);
+app.use('/api/admin/wilayas', adminWilayasRouter);
 
 app.use('/api/admin', adminRouter);
 app.use((req, res, next) => {

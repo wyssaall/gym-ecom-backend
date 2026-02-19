@@ -78,14 +78,6 @@ const updatedCategory = expressAsyncHandler(async (req, res) => {
 
     let updatedCategory = await Category.findByIdAndUpdate(req.params.id, { $set: updateData }, { new: true });
 
-    // If name changed, update all products category field
-    if (name && name !== oldName) {
-        await mongoose.model('Product').updateMany(
-            { category: oldName },
-            { $set: { category: name } }
-        );
-    }
-
     res.status(200).json({ message: "Category updated successfully", updatedCategory })
 });
 

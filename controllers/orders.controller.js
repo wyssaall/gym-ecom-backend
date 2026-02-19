@@ -57,13 +57,9 @@ const createOrder = expressAsyncHandler(async (req, res) => {
         }
     }
 
-    // 2. Decrement Stock
+    // 2. Decrement Stock (use $inc to avoid re-validating full document; some products may have category as string in DB)
     for (const item of items) {
-        const product = await Product.findById(item.product);
-        if (product) {
-            product.stock -= item.quantity;
-            await product.save();
-        }
+        await Product.findByIdAndUpdate(item.product, { $inc: { stock: -item.quantity } });
     }
 
     // 3. Create Order
@@ -78,11 +74,12 @@ const createOrder = expressAsyncHandler(async (req, res) => {
 
 const getAllOrders = expressAsyncHandler(async(req,res)=>{
         const query = req.query;
-    const limit = Number(query.limit) || 2;
-    const page = Number(query.page )|| 1;
+    const limit = Math.min(Number(query.limit) || 50, 500);
+    const page = Number(query.page) || 1;
     const skip = (page - 1) * limit;
-    let orders = await Order.find().limit(limit).skip(skip);
-    res.json(orders);
+    const orders = await Order.find().sort({ createdAt: -1 }).limit(limit).skip(skip);
+    const total = await Order.countDocuments();
+    res.json({ orders, total, page, pages: Math.ceil(total / limit) });
 });
 
 //update 
