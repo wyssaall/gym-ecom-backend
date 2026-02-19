@@ -51,7 +51,7 @@ app.use((req, res, next) => {
 
 app.use(errorHandler); //global error handler middleware
 
-app.listen(port, 'localhost', () => {
+app.listen(port, "0.0.0.0", () => {
     console.log(`the server is running at port ${port}`);
 
 })
